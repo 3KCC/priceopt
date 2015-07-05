@@ -1,0 +1,17 @@
+{
+  "name": "priceopt",
+  "version": "0.0.1",
+  "description": "Price optimization",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "3KCC",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^1.3.0",
+    "connect": "^3.4.0",
+    "fs": "0.0.2",
+    "request": "^2.58.0"
+  }
+}
