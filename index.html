@@ -8,7 +8,7 @@
     {
       if (xmlhttp.readyState==4 && xmlhttp.status==200)
       {
-        document.getElementById("result").innerHTML=xmlhttp.responseText;
+        document.getElementById("result").innerHTML="<p>Updated on: " + new Date() +"</p>" + xmlhttp.responseText;
       }
     }
     xmlhttp.open("GET","/rate",true);
