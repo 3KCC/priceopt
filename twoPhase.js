@@ -1,20 +1,34 @@
 var _ = require('underscore');
-
-var Tableau = function(A, numConstraints, numVars, numSlacks){
-	this.A = A;
-	this.m = A.length;
-	this.n = A[0].length;
-	this.horizon = function(){
-		
+var tb = require('./input');
+/*var Tableau = function(origin, numConstraints, numVars, numSlacks){
+	this.origin = origin;
+	
+	this.horizon = 	function(){
 		var arr = [];
 		for (var i = 1; i <= numVars; i++){
 			arr.push('x' + i);
 		}
-		for (var i = 1; i <= numSlacks; i++){
-			arr.push('z' + i);
-		}
 		return arr;
 	}();
+
+	this.getSlack = function(){
+		
+		var A = origin.slice();
+		for (var i = 1; i <= numSlacks; i++){
+			this.horizon.push('z' + i);
+			for(var row in A){
+				if(parseInt(row) === (i - 1)){
+					A[row].splice(A[row].length - 1,0,1);
+				}else{
+					A[row].splice(A[row].length - 1,0,0);
+				}
+			}
+		}
+		this.horizon.push('p');
+		this.A = A;
+		this.m = A.length;
+		this.n = A[0].length;
+	};
 
 	this.numVars = numVars;
 	this.numSlacks = numSlacks;
@@ -27,11 +41,15 @@ var Tableau = function(A, numConstraints, numVars, numSlacks){
 		for( var row in A){
 			if(A[row][pos] < 0){
 				count++;
+				this.horizon.splice(this.horizon.length - 1,0,'y' + count);
+				this.vertical[row] = 'y' + count;
 			}
 			pos++;
 		}
-
-		return count;
+		this.numArt = count;
+		if(count > 0){
+			this.vertical.push('p','pI')
+		}
 	};
 
 };
@@ -43,7 +61,11 @@ problem = new Tableau([[1, 1, -1, 0, 0, 1],
 			[3, 0, -1, -1, 0, 0, 0, 2]],
 			3, 2, 3);
 
-console.log(problem);
+problem.getSlack();
+console.log(problem);*/
+
+var prob = new tb.Tableau(2, 3, [[1,1],[2,-1],[0,1]], ['>=','>=','<='], [1,1,2]);
+console.log(prob);
 
 //input: 2D-array matrix, [row, column] of the pivot cell
 //output: new matrix (2-D array)
@@ -163,7 +185,7 @@ function simplex(matrix){
 		c = getpCol(A);
 	}
 	//console.log(v, getACol(A,n-1));
-	var result = new Tableau(A, h, v);
+	var result = new Tableau(A, matrix.numConstraints, matrix.numVars, matrix.numSlacks);
 	return result;
 }
 
