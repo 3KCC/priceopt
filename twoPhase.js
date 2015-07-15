@@ -1,71 +1,5 @@
 var _ = require('underscore');
 var tb = require('./input');
-/*var Tableau = function(origin, numConstraints, numVars, numSlacks){
-	this.origin = origin;
-	
-	this.horizon = 	function(){
-		var arr = [];
-		for (var i = 1; i <= numVars; i++){
-			arr.push('x' + i);
-		}
-		return arr;
-	}();
-
-	this.getSlack = function(){
-		
-		var A = origin.slice();
-		for (var i = 1; i <= numSlacks; i++){
-			this.horizon.push('z' + i);
-			for(var row in A){
-				if(parseInt(row) === (i - 1)){
-					A[row].splice(A[row].length - 1,0,1);
-				}else{
-					A[row].splice(A[row].length - 1,0,0);
-				}
-			}
-		}
-		this.horizon.push('p');
-		this.A = A;
-		this.m = A.length;
-		this.n = A[0].length;
-	};
-
-	this.numVars = numVars;
-	this.numSlacks = numSlacks;
-	this.numConstraints = numConstraints;
-	this.vertical = this.horizon.slice(numVars);
-	this.getArt = function(){
-
-		var count = 0, pos = numVars;
-
-		for( var row in A){
-			if(A[row][pos] < 0){
-				count++;
-				this.horizon.splice(this.horizon.length - 1,0,'y' + count);
-				this.vertical[row] = 'y' + count;
-			}
-			pos++;
-		}
-		this.numArt = count;
-		if(count > 0){
-			this.vertical.push('p','pI')
-		}
-	};
-
-};
-
-problem = new Tableau([[1, 1, -1, 0, 0, 1],
-			[2, -1, 0, -1, 0, 1],
-			[0, 3, 0, 0, 1, 0, 0, 2],
-			[-6, -3, 0, 0, 0, 0, 0, 0],
-			[3, 0, -1, -1, 0, 0, 0, 2]],
-			3, 2, 3);
-
-problem.getSlack();
-console.log(problem);*/
-
-var prob = new tb.Tableau(2, 3, [[1,1],[2,-1],[0,1]], ['>=','>=','<='], [1,1,2]);
-console.log(prob);
 
 //input: 2D-array matrix, [row, column] of the pivot cell
 //output: new matrix (2-D array)
@@ -90,10 +24,9 @@ function GuassElimination(matrix, pivot){
 	return m;
 }
 
-//input: 2-D array for matrix
+//input: last row (array)
 //output: index (integer) of the pivot column or -1 if all entries in the last row is non-positive
-function getpCol(matrix){
-	var lastR = matrix[matrix.length - 1];
+function getpCol(lastR){
 	for(var i = 0; i < lastR.length - 1; i++){
 		if(lastR[i] > 0){ return i;}
 	}
@@ -135,6 +68,11 @@ function getACol(matrix, index){
 	}
 	return arr
 }
+
+function lastRow(matrix){
+	return matrix[matrix.length - 1];
+}
+
 function gcd(x, y){
 	var temp;
 	while (y){
@@ -170,38 +108,79 @@ function xNumArr(arr, constant){
 
 //input: matrix (object)
 function simplex(matrix){
-	var A = matrix.A, m = matrix.m, n = matrix.n;
-	var h = matrix.horizon, v = matrix.vertical;
-	var c = getpCol(A);
-	var r;
-
-	//console.log(h);
-	//console.log(v, A);
-	while( c !== -1){//the solution is optimal
-		r = getpRow(A, c);
-		v[r] = h[c];
-		A = GuassElimination(A,[r,c]);
-		//console.log(v, A);
-		c = getpCol(A);
-	}
-	//console.log(v, getACol(A,n-1));
-	var result = new Tableau(A, matrix.numConstraints, matrix.numVars, matrix.numSlacks);
-	return result;
+	var h = matrix.horizon;
+	var v = matrix.vertical;
+	var workTb = matrix.table;
+	return interate(workTb, h, v, 1);
 }
 
 //input: matrix (object)
 //output: result matrix (object)
 function twoPhase(matrix){
+	var h = matrix.horizon;
+	var v = matrix.vertical;
 	//Phase 1: return the BFS for next stage
-	var newMatrix = simplex(matrix);
-	newMatrix.A.pop();
-	newMatrix.horizon = ['x1', 'x2', 'z1', 'z2', 'z3', 'p'];
-	matrix.vertical.pop();
-	for( var row in newMatrix.A){
-		newMatrix.A[row].splice(5,2);
-	}
-
-	return simplex(newMatrix);
+	var result;
+	result = phaseI(matrix.table, matrix.numOfArt, h, v);
+	tb = result[0];
+	h = result[1];
+	v = result[2];
+	result = phaseII(tb, matrix.numOfArt, h, v);
+	return result;
 }
 
-//console.log(twoPhase(problem));
+function phaseI(matrix, numArt, h, v){
+	var workTb = matrix;
+	var lastR = lastRow(matrix);
+	var m = matrix.length;
+	var n = matrix[0].length;
+	var result;
+	
+	//writte the last row in terms of non-basic variables. All var in basis = 0
+	for(var i = 0; i < numArt; i++){
+		lastR = sumArr(lastR, matrix[i]);
+	}
+	workTb[workTb.length - 1] = lastR;
+	
+	result = interate(workTb, h, v, 2);
+
+	return result;
+}
+
+function phaseII(matrix, numArt, h, v){
+	var workTb = matrix;
+	var result;
+	workTb.pop();
+	workTb = removeCol(workTb, workTb[0].length - 1 - numArt, numArt);
+	result = interate(workTb, h, v, 1);
+	return result;
+}
+
+function removeCol(table, start, num){
+	for(var row in table){
+		table[row] = table[row].slice(0, start).concat(table[row].slice(start+num));
+	}
+	return table;
+}
+
+function interate(matrix, h, v, num){
+	var workTb = matrix;
+	var lastR = lastRow(workTb);
+	var m = matrix.length;
+	
+	var c = getpCol(lastR);
+	var r;
+
+	while(c !== -1){
+		r = getpRow(workTb.slice(0, m - num), c);
+		v[r] = h[c];
+		workTb = GuassElimination(workTb, [r,c]);
+		c = getpCol(lastRow(workTb));
+	}
+
+	return [workTb, h, v];
+}
+
+var prob = new tb.Tableau(2, 3, [[1,1],[2,-1],[0,3]], ['>=','>=','<='], [[1],[1],[2]], 'minimize', [6, 3]);
+//console.log(prob);
+console.log(twoPhase(prob));
