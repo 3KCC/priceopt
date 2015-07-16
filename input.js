@@ -4,6 +4,7 @@ var _ = require('underscore');
 var Tableau = function(numOfVars, numOfCons, coef, sign, pCol, objective, objCoef){
 	this.coef = coef;
 	this.pCol = pCol;
+	this.sign = sign;
 	this.numOfVars = numOfVars;
 	this.numOfCons = numOfCons;
 	this.numOfArt = numOfArtificial(sign);
@@ -160,7 +161,41 @@ function multiConcat(arr){
 	return result;
 }
 
-//var prob = new Tableau(2, 3, [[1,1],[2,-1],[0,1]], ['>=','>=','<='], [1,1,2]);
-//console.log(prob);
+function arrangeMatrix(table, p, sign){
+	var sI = [], sII = [];
+	var tI = [], tII = [];
+	var pI = [], pII = [];
+	for(var i = 0; i < sign.length; i++){
+		if(sign[i] === ">="){ 
+			sI.push(sign[i]);
+			tI.push(table[i]);
+			pI.push(p[i]);
+		}
+		if(sign[i] !== ">="){ 
+			sII.push(sign[i]);
+			tII.push(table[i]);
+			pII.push(p[i]);
+		}
+	}
+	sign = sI.concat(sII);
+	table = tI.concat(tII);
+	p = pI.concat(pII);
 
+	return [table, p, sign];
+}
+
+/*
+var coef = [[1,1],[0,1],[2,-1]];
+var sign = ['>=','<=','>='];
+var p = [1,2,1];
+var result = arrangeMatrix(coef, p, sign);
+coef = result[0];
+p = result[1];
+sign = result[2];
+
+var prob = new Tableau(2, 3, coef, sign, p, 'minimize', [6, 3]);
+//console.log(prob);
+//console.log(arrangeMatrix(prob.coef, prob.pCol, prob.sign));
+*/
 exports.Tableau = Tableau;
+exports.arrangeMatrix = arrangeMatrix;
