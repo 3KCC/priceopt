@@ -6,6 +6,7 @@ var tb = require('./input');
 function GuassElimination(matrix, pivot){
 	var m = matrix.slice();
 	var pRow = pivot[0], pCol = pivot[1];
+	if(!isNumeric(pRow) || !isNumeric(pCol)){ throw "GuassElimination() fail: pivot variable is not a number.";}
 	var pCel = m[pRow][pCol];
 	//pivot be a positive number
 	if(pCel !== 0){
@@ -15,40 +16,33 @@ function GuassElimination(matrix, pivot){
 	}
 	pCel = m[pRow][pCol];
 	var test;
+/*	for (var r=0; r<m.length; r++) {
+		if(m[r].length !== 38){ console.log(r);}
+	}*/
 	for (var r=0; r<m.length; r++) {
 		//multiply non-pivot rows with a suitable number and add with the pivot row
 		test = m[0].length;
 
-		console.log('init',test,m[0].length);
+		//console.log('init',test,m[0].length);
 		
+
 		if (r !== pRow){
 			var coef =  - m[r][pCol]/pCel;
-			var multiplied = xNumArr(m[pRow], coef);
-			//m[r] = sumArr(m[r], xNumArr(m[pRow], coef));// to guarantee that the solutions is feasible (positive)
-			m[r] = sumArr(m[r],multiplied);
+			if(!isNumeric(coef)){ throw "GuassElimination() fail: coef variable is not a number.";}
+			//var multiplied = xNumArr(m[pRow], coef);
+			m[r] = sumArr(m[r], xNumArr(m[pRow], coef));// to guarantee that the solutions is feasible (positive)
+			//m[r] = sumArr(m[r],multiplied);
 
 		}
 		
-		if(test !== m[0].length){
+/*		if(test !== m[0].length){
 			console.log('diff',test,m[0].length);
 			console.log('wrong',r, pRow, m[r].length, m[pRow].length);
-		}
+		}*/
 		
 	}
 	return m;
 }
-
-/*var A = [[1,2,3],[4,5,6],[5,5,6],[0,0,-2]];
-var pr = 1, pc = 1;
-for(var r in A){
-	t = A[0].length;
-	if (parseInt(r) !== pr){
-		var ef = - A[r][pc]/2;
-		A[r] = sumArr(A[r], xNumArr(A[pr],ef));
-	}
-	if(t !== A[0].length){console.log(A[r].length);}
-}
-console.log(A);*/
 
 //input: last row (array)
 //output: index (integer) of the pivot column or -1 if all entries in the last row is non-positive
@@ -114,17 +108,17 @@ function lcm(arr){
 }
 
 //pass all arrays to sum
-function sumArr(a1,a2){
+function sumArr(){
 	//convert object to nested array
-	/*var arr = _.map(arguments, function(value, index){
+	var arr = _.map(arguments, function(value, index){
 		return value;
-	});*/
+	});
 
 	//var arr = Array.prototype.slice.call(arguments);
 
 	//zip them with the trick of .apply(), help pass arguments using an Array
-	//arr = _.zip.apply(_.zip, arr);
-	var arr = _.zip(a1,a2);
+	arr = _.zip.apply(_.zip, arr);
+	//var arr = _.zip(a1,a2);
 	return _.map(arr, function(pieces){
 		return _.reduce(pieces, function(memo, num){ 
 			return memo + num;
@@ -135,7 +129,12 @@ function sumArr(a1,a2){
 //input: array, number
 //output: new array after multiplying
 function xNumArr(arr, constant){
+	if(!isNumeric(constant)){ throw "xNumArr() fail: constant-input is not a number."}
 	return _.map(arr, function(value){ return value*constant;});
+}
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 //input: matrix (object)
@@ -152,7 +151,6 @@ function twoPhase(matrix){
 	var h = matrix.horizon;
 	var v = matrix.vertical;
 	//Phase 1: return the BFS for next stage
-	var result;
 	result = phaseI(matrix.table, matrix.numOfArt, h, v);
 	tb = result[0];
 	h = result[1];
@@ -168,12 +166,12 @@ function phaseI(matrix, numArt, h, v){
 	var m = matrix.length;
 	var n = matrix[0].length;
 	var result;
-	
 	//writte the last row in terms of non-basic variables. All var in basis = 0
 	for(var i = 0; i < numArt; i++){
 		lastR = sumArr(lastR, matrix[i]);
 	}
 	workTb[workTb.length - 1] = lastR;
+	
 	result = interate(workTb, h, v, 2);
 	return result;
 }
@@ -183,7 +181,7 @@ function phaseII(matrix, numArt, h, v){
 	var result;
 	workTb.pop();
 	workTb = removeCol(workTb, workTb[0].length - 1 - numArt, numArt);
-	h = h.slice(0, h.length - 1 - numArt);
+	h = h.slice(0, h.length - numArt);
 	result = interate(workTb, h, v, 1);
 	return result;
 }
@@ -201,13 +199,13 @@ function interate(matrix, h, v, num){
 	var m = matrix.length;
 	
 	var c = getpCol(lastR);
+	console.log(lastR.length);
 	var r;
-
 	while(c !== -1){
 		r = getpRow(workTb.slice(0, m - num), c);
 		v[r] = h[c];
 		workTb = GuassElimination(workTb, [r,c]);
-		//if(typeof(v[r]) === 'undefined'){ console.log(lastRow(workTb).length);}
+		//if(typeof(v[r]) === 'undefined'){ console.log(c, h.length);}
 		c = getpCol(lastRow(workTb));
 		
 	}
@@ -217,7 +215,7 @@ function interate(matrix, h, v, num){
 
 
 var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
-			[-1,1,0,0,0,0,0,0,0,0,0,0,0],
+			[-1,1,0,0,0,0,0,0,0,0,0,0],
 			[0,0,1,1,0,0,0,0,0,0,0,0],
 			[0,0,-1,1,0,0,0,0,0,0,0,0],
 			[0,0,0,0,1,1,0,0,0,0,0,0],
@@ -248,6 +246,6 @@ var prob = new tb.Tableau(12, 19, coef, sign, p, 'minimize', [0,1,0,1,0,1,0,1,0,
 //var prob = new tb.Tableau(2, 3, [[1,1],[2,-1],[0,3]], ['>=','>=','<='], [1,1,2], 'minimize', [6, 3]);
 //console.log(prob);
 result = twoPhase(prob);
-//var lastC = getACol(result[0], result[0][0].length - 1);
-//console.log(result[2], lastC);
-//console.log(result);
+var lastC = getACol(result[0], result[0][0].length - 1);
+console.log(JSON.stringify(result[2], lastC));
+//console.log(JSON.stringify(result));
