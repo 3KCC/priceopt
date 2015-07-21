@@ -47,7 +47,7 @@ function GuassElimination(matrix, pivot){
 //input: last row (array)
 //output: index (integer) of the pivot column or -1 if all entries in the last row is non-positive
 function getpCol(lastR){
-	for(var i = 0; i < lastR.length; i++){
+	for(var i = 0; i < lastR.length - 1; i++){ //do not consider the last column - result column
 		if(lastR[i] > 0){ return i;}
 	}
 	return -1; //no positive entry
@@ -199,13 +199,12 @@ function interate(matrix, h, v, num){
 	var m = matrix.length;
 	
 	var c = getpCol(lastR);
-	console.log(lastR.length);
 	var r;
 	while(c !== -1){
 		r = getpRow(workTb.slice(0, m - num), c);
 		v[r] = h[c];
 		workTb = GuassElimination(workTb, [r,c]);
-		//if(typeof(v[r]) === 'undefined'){ console.log(c, h.length);}
+		//if(typeof(v[r]) === 'undefined'){ console.log(c, lastR.length);}
 		c = getpCol(lastRow(workTb));
 		
 	}
@@ -234,7 +233,7 @@ var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,1,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0,1,0]];
 var sign = ['>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','=','<=','<=','<=','<=','<=','<='];
-var p = [[0.0152],[0.0152],[0.0152],[0.0152],[0.0152],[0.0152],[0.0152],[0.0152],[0.0152],[0.0152],[0.0152],[0.0152],
+var p = [[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],
 		[0.0909],[0.0087],[1],[1],[1],[1],[1]];
 var result = tb.arrangeMatrix(coef, p, sign);
 coef = result[0];
@@ -244,8 +243,8 @@ sign = result[2];
 var prob = new tb.Tableau(12, 19, coef, sign, p, 'minimize', [0,1,0,1,0,1,0,1,0,1,0,1]);
 
 //var prob = new tb.Tableau(2, 3, [[1,1],[2,-1],[0,3]], ['>=','>=','<='], [1,1,2], 'minimize', [6, 3]);
-//console.log(prob);
-result = twoPhase(prob);
+console.log(prob.vertical);
+/*result = twoPhase(prob);
 var lastC = getACol(result[0], result[0][0].length - 1);
-console.log(JSON.stringify(result[2], lastC));
+console.log(result[2].length, lastC.length);*/
 //console.log(JSON.stringify(result));

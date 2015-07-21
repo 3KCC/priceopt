@@ -7,13 +7,14 @@ var Tableau = function(numOfVars, numOfCons, coef, sign, pCol, objective, objCoe
 	this.sign = sign;
 	this.numOfVars = numOfVars;
 	this.numOfCons = numOfCons;
-	this.numOfArt = numOfArtificial(sign);
-	this.pRow = addZero(0, this.numOfCons + this.numOfArt + 1, coefSign(objective, objCoef));
-	this.pArt = addZero(this.numOfCons + this.numOfVars, 1, arrOfNum(-1, this.numOfArt));
+	this.numOfSlacks = numOfASign(sign, '<=') + numOfASign(sign, '>=');
+	this.numOfArt = numOfASign(sign, '>=') + numOfASign(sign, '=');
+	this.pRow = addZero(0, this.numOfSlacks + this.numOfArt + 1, coefSign(objective, objCoef));
+	this.pArt = addZero(this.numOfSlacks + this.numOfVars, 1, arrOfNum(-1, this.numOfArt));
 	this.varName = varName(numOfVars,'x');
-	this.slkName = varName(numOfCons, 'z');
+	this.slkName = varName(this.numOfSlacks, 'z');
 	this.artName = varName(this.numOfArt, 'y');
-	this.slack = identityMatrix(numOfCons,coefOfSlack(sign));
+	this.slack = push0Rows(identityMatrix(this.numOfSlacks,coefOfSlack(sign)), numOfCons - this.numOfSlacks);
 	this.art = artMatrix(numOfCons, this.numOfArt, sign);
 	this.table = multiConcat([coef, this.slack, this.art, pCol]).concat([this.pRow, this.pArt]);
 	this.horizon = this.varName.concat(this.slkName, this.artName);
@@ -61,21 +62,20 @@ function varName(numOfVars, type){
 function coefOfSlack(sign){
 	var arr = [];
 	for(var i in sign){
-		if(sign[i] === '='){
-			arr.push(0);
-		}else if(sign[i] === '<='){
-			arr.push(1);
-		}else {
+		if(sign[i] === '>='){
 			arr.push(-1);
+		}
+		if(sign[i] === '<='){
+			arr.push(1);
 		}
 	}
 	return arr;
 }
 
-function numOfArtificial(sign){
+function numOfASign(arr,sign){
 	var count = 0;
-	for(var i in sign){
-		if(sign[i] === '>='){
+	for(var i in arr){
+		if(arr[i] === sign){
 			count++;
 		}
 	}
@@ -83,10 +83,14 @@ function numOfArtificial(sign){
 }
 
 function replaceArtificial(arr, sign){
-	var result = arr;
+	var result = arr.slice();
+	var index;
 	for(var i in sign){
 		if(sign[i] === '>='){
 			result[i] = result[i].replace('z','y');
+		}else if(sign[i] === '='){
+			index = parseInt(i) + 1;
+			result.splice(i, 0, 'y' + index);
 		}
 	}
 	return result;
@@ -119,13 +123,26 @@ function identityMatrix(num,arr){
 	return matrix;
 }
 
+//input: arr must be a 2D-arr
+function push0Rows(arr, num){
+	//prepare row of 0
+	var row0 = [];
+	for(var i = 0; i < arr[0].length; i++){
+		row0.push(0);
+	}
+	for(var i = 0; i < num; i++){
+		arr.push(row0);
+	}
+	return arr;
+}
+
 function artMatrix(m,n,sign){
 	var result = [];
 	var pos = 0;
 	for(var i = 0; i < m; i++){
 		result.push([]);
 		for(var j = 0; j < n; j++){
-			if(sign[i] === ">="){
+			if(sign[i] === '>=' || sign[i] === '='){
 				if( j === pos){
 					result[i].push(1);
 				}else{
@@ -162,24 +179,29 @@ function multiConcat(arr){
 }
 
 function arrangeMatrix(table, p, sign){
-	var sI = [], sII = [];
-	var tI = [], tII = [];
-	var pI = [], pII = [];
+	var sI = [], sII = [], sIII = [];
+	var tI = [], tII = [], tIII = [];
+	var pI = [], pII = [], pIII = [];
 	for(var i = 0; i < sign.length; i++){
 		if(sign[i] === ">="){ 
 			sI.push(sign[i]);
 			tI.push(table[i]);
 			pI.push(p[i]);
 		}
-		if(sign[i] !== ">="){ 
+		if(sign[i] === "="){ 
 			sII.push(sign[i]);
 			tII.push(table[i]);
 			pII.push(p[i]);
 		}
+		if(sign[i] === "<="){ 
+			sIII.push(sign[i]);
+			tIII.push(table[i]);
+			pIII.push(p[i]);
+		}
 	}
-	sign = sI.concat(sII);
-	table = tI.concat(tII);
-	p = pI.concat(pII);
+	sign = sI.concat(sII, sIII);
+	table = tI.concat(tII, tIII);
+	p = pI.concat(pII, pIII);
 
 	return [table, p, sign];
 }
