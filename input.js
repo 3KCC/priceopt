@@ -9,12 +9,13 @@ var Tableau = function(numOfVars, numOfCons, coef, sign, pCol, objective, objCoe
 	this.numOfCons = numOfCons;
 	this.numOfSlacks = numOfASign(sign, '<=') + numOfASign(sign, '>=');
 	this.numOfArt = numOfASign(sign, '>=') + numOfASign(sign, '=');
+	this.numOfEq = numOfASign(sign, '=');
 	this.pRow = addZero(0, this.numOfSlacks + this.numOfArt + 1, coefSign(objective, objCoef));
 	this.pArt = addZero(this.numOfSlacks + this.numOfVars, 1, arrOfNum(-1, this.numOfArt));
 	this.varName = varName(numOfVars,'x');
 	this.slkName = varName(this.numOfSlacks, 'z');
 	this.artName = varName(this.numOfArt, 'y');
-	this.slack = push0Rows(identityMatrix(this.numOfSlacks,coefOfSlack(sign)), numOfCons - this.numOfSlacks);
+	this.slack = push0Rows(identityMatrix(this.numOfSlacks,coefOfSlack(sign)), this.numOfArt - this.numOfEq, numOfCons - this.numOfSlacks);
 	this.art = artMatrix(numOfCons, this.numOfArt, sign);
 	this.table = multiConcat([coef, this.slack, this.art, pCol]).concat([this.pRow, this.pArt]);
 	this.horizon = this.varName.concat(this.slkName, this.artName);
@@ -124,14 +125,14 @@ function identityMatrix(num,arr){
 }
 
 //input: arr must be a 2D-arr
-function push0Rows(arr, num){
+function push0Rows(arr, index, num){
 	//prepare row of 0
 	var row0 = [];
 	for(var i = 0; i < arr[0].length; i++){
 		row0.push(0);
 	}
 	for(var i = 0; i < num; i++){
-		arr.push(row0);
+		arr.splice(index, 0, row0);
 	}
 	return arr;
 }

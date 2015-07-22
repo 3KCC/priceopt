@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var tb = require('./input');
+var priceInput = require('./priceInput');
 
 //input: 2D-array matrix, [row, column] of the pivot cell
 //output: new matrix (2-D array)
@@ -15,7 +16,7 @@ function GuassElimination(matrix, pivot){
 		throw "pivot is 0";
 	}
 	pCel = m[pRow][pCol];
-	var test;
+	//var test;
 /*	for (var r=0; r<m.length; r++) {
 		if(m[r].length !== 38){ console.log(r);}
 	}*/
@@ -213,18 +214,18 @@ function interate(matrix, h, v, num){
 }
 
 
-var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
-			[-1,1,0,0,0,0,0,0,0,0,0,0],
+/*var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
+			[1,-1,0,0,0,0,0,0,0,0,0,0],
 			[0,0,1,1,0,0,0,0,0,0,0,0],
-			[0,0,-1,1,0,0,0,0,0,0,0,0],
+			[0,0,1,-1,0,0,0,0,0,0,0,0],
 			[0,0,0,0,1,1,0,0,0,0,0,0],
-			[0,0,0,0,-1,1,0,0,0,0,0,0],
+			[0,0,0,0,1,-1,0,0,0,0,0,0],
 			[0,0,0,0,0,0,1,1,0,0,0,0],
-			[0,0,0,0,0,0,-1,1,0,0,0,0],
+			[0,0,0,0,0,0,1,-1,0,0,0,0],
 			[0,0,0,0,0,0,0,0,1,1,0,0],
-			[0,0,0,0,0,0,0,0,-1,1,0,0],
-			[0,0,0,0,0,0,0,0,1,0,1,1],
-			[0,0,0,0,0,0,0,0,1,0,-1,1],
+			[0,0,0,0,0,0,0,0,1,-1,0,0],
+			[0,0,0,0,0,0,0,0,0,0,1,1],
+			[0,0,0,0,0,0,0,0,0,0,1,-1],
 			[1,0,1,0,1,0,1,0,1,0,1,0],
 			[1,0,0,0,0,0,0,0,0,0,0,0],
 			[0,0,1,0,0,0,0,0,0,0,0,0],
@@ -233,18 +234,24 @@ var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,1,0,0,0],
 			[0,0,0,0,0,0,0,0,0,0,1,0]];
 var sign = ['>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','=','<=','<=','<=','<=','<=','<='];
-var p = [[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],[0.01515],
-		[0.0909],[0.0087],[1],[1],[1],[1],[1]];
+var p = [[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],
+		[0.0873],[0.0087],[1],[1],[1],[1],[1]];*/
+
+var coef = priceInput.coef;
+var sign = priceInput.sign;
+var p = priceInput.p;
+//console.log(p);
+
 var result = tb.arrangeMatrix(coef, p, sign);
 coef = result[0];
 p = result[1];
 sign = result[2];
-
+//console.log(sign);
 var prob = new tb.Tableau(12, 19, coef, sign, p, 'minimize', [0,1,0,1,0,1,0,1,0,1,0,1]);
 
 //var prob = new tb.Tableau(2, 3, [[1,1],[2,-1],[0,3]], ['>=','>=','<='], [1,1,2], 'minimize', [6, 3]);
-console.log(prob.vertical);
-/*result = twoPhase(prob);
+//console.log(prob.slack);
+result = twoPhase(prob);
 var lastC = getACol(result[0], result[0][0].length - 1);
-console.log(result[2].length, lastC.length);*/
+console.log(result[2], lastC);
 //console.log(JSON.stringify(result));
