@@ -74,8 +74,12 @@ function getRates(){
       getSingleRate('JPYMYR',callback);
     }*/
   ], function(err, results){
-    console.log('done');
-    JSON.stringify(results);
+    if (err){
+      console.log('err',err);
+    }
+    else{
+      console.log('result',JSON.stringify(results));
+    }
   });
 };
 
@@ -100,5 +104,5 @@ app.use('/', function(req, res){
   });
 });
 
-http.createServer(app).listen(3000);
+//http.createServer(app).listen(3000);
 console.log("Server start @ 3000 (HTTP)");
