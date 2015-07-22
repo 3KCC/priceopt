@@ -52,6 +52,35 @@ function getAllRates(res){
   });
 }
 
+function getRates(){
+  console.log('correct');
+  async.series([
+    function(callback){
+      getSingleRate('USDMYR',callback);
+    }/*,
+    function(callback){
+      getSingleRate('EURMYR',callback);
+    },
+    function(callback){
+      getSingleRate('GBPMYR',callback);
+    },
+    function(callback){
+      getSingleRate('AUDMYR',callback);
+    },
+    function(callback){
+      getSingleRate('SGDMYR',callback);
+    },
+    function(callback){
+      getSingleRate('JPYMYR',callback);
+    }*/
+  ], function(err, results){
+    console.log('done');
+    JSON.stringify(results);
+  });
+};
+
+getRates();
+
 app.use('/rate', function(req, res){
   //res.end(Date.now().toString());
   getAllRates(res);
@@ -73,4 +102,3 @@ app.use('/', function(req, res){
 
 http.createServer(app).listen(3000);
 console.log("Server start @ 3000 (HTTP)");
-
