@@ -242,16 +242,24 @@ var sign = priceInput.sign;
 var p = priceInput.p;
 //console.log(p);
 
-var result = tb.arrangeMatrix(coef, p, sign);
+/*var result = tb.arrangeMatrix(coef, p, sign);
 coef = result[0];
 p = result[1];
-sign = result[2];
+sign = result[2];*/
 //console.log(sign);
-var prob = new tb.Tableau(12, 19, coef, sign, p, 'minimize', [0,1,0,1,0,1,0,1,0,1,0,1]);
-
+/*var prob = new tb.Tableau(12, 19, coef, sign, p, 'minimize', [0,1,0,1,0,1,0,1,0,1,0,1]);
+//console.log(prob.sign);
 //var prob = new tb.Tableau(2, 3, [[1,1],[2,-1],[0,3]], ['>=','>=','<='], [1,1,2], 'minimize', [6, 3]);
 //console.log(prob.slack);
 result = twoPhase(prob);
 var lastC = getACol(result[0], result[0][0].length - 1);
 console.log(result[2], lastC);
-//console.log(JSON.stringify(result));
+//console.log(JSON.stringify(result));*/
+
+function logResult(result){
+	var lastC = getACol(result[0], result[0][0].length - 1);
+	console.log(result[2], lastC);
+}
+
+exports.twoPhase = twoPhase;
+exports.logResult = logResult;

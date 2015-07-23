@@ -34,6 +34,58 @@ function sumArr(){
 	});
 }
 
+//pass all arrays to sum
+function multiply1DArr(arr1, arr2){
+	//convert object to nested array
+	var arr = Array.prototype.slice.call(arguments);
+	//alternative way
+	/*var arr = _.map(arguments, function(value, index){
+		return value;
+	});*/
+
+	//only numeric arrays are accepted
+	if(arr.length === 0){throw "multiply1DArr() fail: input is empty";}
+	//only 2 arrays are supported
+	if(arr.length !== 2){throw "multiply1DArr() fail: must be exactly 2 1-D arrays input";}
+	for( var i = 0; i < arr.length; i++){
+		if(arr[i].constructor !== Array){ 
+			throw "multiply1DArr() fail: item at " + i +" is not a array but a/an " + typeof(arr[i]);
+		}
+		if(notNumber(arr[i]) !== -1){ throw 'multiply1DArr() fail: array at ' + i + ' contains non-numeric item';}
+	}
+
+	//all arrays must have same length
+	if(arr.length === 1){ return arr[0];} //no arguments/only one arguments was passed
+	var len = arr[0].length;
+	for( var i = 0; i < arr.length; i++){
+		if(arr[i].length !== len){ throw "multiply1DArr() fail: arrays have different length at index " + i}
+	}
+
+	//zip them with the trick of .apply(), help pass arguments using an Array
+	arr = _.zip.apply(_.zip, arr);
+	return _.map(arr, function(pieces){
+		return _.reduce(pieces, function(memo, num){ 
+			return memo * num;
+		});
+	});
+}
+
+//input: 1-D array
+//output: its transpose
+function transpose1D(arr){
+	if(arr.constructor !== Array){ 
+		throw "transpose1D() fail: input is not a array but a/an " + typeof(arr);
+	}
+
+	var tp = [];
+	for(var i=0;i<arr.length;i++){
+		//no nested array
+		if(arr[i].constructor === Array){ throw 'transpose1D() fail: nested array is given at ' + i + 'arr[i] = ' + arr[i];}
+		tp.push([arr[i]]);
+	}
+	return tp;
+}
+
 //input: array, number
 //output: new array after multiplying
 function xNumArr(arr, constant){
@@ -70,3 +122,5 @@ function notNumber(arr){
 exports.xNumArr = xNumArr;
 exports.sumArr = sumArr;
 exports.isNumeric = isNumeric;
+exports.transpose1D = transpose1D;
+exports.multiply1DArr = multiply1DArr;

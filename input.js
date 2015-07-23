@@ -1,10 +1,12 @@
 var _ = require('underscore');
+var live = require('./liveFeed');
 
 //input: number of variables(int), number of constraints(int), coefficients array (2D-array), sign array, last column array
 var Tableau = function(numOfVars, numOfCons, coef, sign, pCol, objective, objCoef){
-	this.coef = coef;
-	this.pCol = pCol;
-	this.sign = sign;
+	this.cps = arrangeMatrix(coef, pCol, sign);
+	this.coef = this.cps[0];
+	this.pCol = this.cps[1];
+	this.sign = this.cps[2];
 	this.numOfVars = numOfVars;
 	this.numOfCons = numOfCons;
 	this.numOfSlacks = numOfASign(sign, '<=') + numOfASign(sign, '>=');
