@@ -6,7 +6,9 @@ $(document).ready(function() {
 	for(var i=0;i<ccys.length;i++){
 		$("#input-tb").append(HTMLRowGeneral.replace("%data%",HTMLCcy.replace("%data%",ccys[i])));
 	}
+	$(".ccy").first().append(HTMLLive.replace('%data%', 'N/A'));
 });
+
 
 	//setInterval(function(){
 		var xmlhttp = new XMLHttpRequest();    
@@ -14,12 +16,14 @@ $(document).ready(function() {
 		{
 		  if (xmlhttp.readyState==4 && xmlhttp.status==200)
 		  {
-		    liveRate = xmlhttp.response;
-		    console.log(liveRate);
+		    liveRate = JSON.parse(xmlhttp.responseText);
+		    liveRate = $.map(liveRate, function(elm) { return elm; });
+		    //console.log(liveRate);
+
 	    /*for(var i=0;i<ccys.length;i++){
 			$(".").append(HTMLRowGeneral.replace("%data%",HTMLccy.replace("%data%",ccys[i])));
 		}*/
-			$(".ccy").first().append(HTMLLive.replace('%data%', liveRate[0]))
+			$(".ccy").first().append(HTMLLive.replace('%data%', liveRate[0]));
 		  }
 		}
 		xmlhttp.open("GET","/rate",true);

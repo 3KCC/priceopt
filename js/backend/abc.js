@@ -31,7 +31,7 @@ function getAllRates(res){
   async.series([
     function(callback){
       getSingleRate('USDMYR',callback);
-    },
+    }/*,
     function(callback){
       getSingleRate('EURMYR',callback);
     },
@@ -46,7 +46,7 @@ function getAllRates(res){
     },
     function(callback){
       getSingleRate('JPYMYR',callback);
-    }
+    }*/
   ], function(err, results){
     res.end(JSON.stringify(results));
   });
@@ -81,6 +81,7 @@ function getRates(){
       for(var i=0; i<results.length; i++){
         rateArr.push(parseFloat(results[i].Rate));
       }
+      console.log(rateArr);
       return rateArr;
     }
   });
@@ -88,12 +89,9 @@ function getRates(){
 
 //exports.getRates = getRates;
 
-app.use('/rate', function(req, res){
-  //res.end(Date.now().toString());
-  getAllRates(res);
-});
 
-app.use('/', function(req, res){
+
+/*app.use('/', function(req, res){
   //getAllRates(res);
   fs.readFile(__dirname + '../../../main.html', function(error, content) {
     if (error) {
@@ -106,7 +104,9 @@ app.use('/', function(req, res){
       res.end(content, 'utf-8');
     }
   });
-});
+});*/
 
-http.createServer(app).listen(3000);
+//http.createServer(app).listen(3000);
 //console.log("Server start @ 3000 (HTTP)");
+
+exports.getRates = getRates;
