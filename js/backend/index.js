@@ -95,8 +95,9 @@ app.use('/rate', function(req, res){
 
 app.use('/', function(req, res){
   //getAllRates(res);
-  fs.readFile('./index.html', function(error, content) {
+  fs.readFile(__dirname + '../../../main.html', function(error, content) {
     if (error) {
+      console.log(error);
       res.writeHead(500);
       res.end();
     }

@@ -113,3 +113,4 @@ exports.obj = obj;
 exports.numVars = numVars;
 exports.numConstraints = numConstraints;
 exports.calculateP = calculateP;
+exports.ccy = ccy;

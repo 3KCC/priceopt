@@ -3,19 +3,21 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-sccale=1.0">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" href="./css/main.css">
+	<link rel="stylesheet" href="./public/css/main.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="./public/js/priceInput.js"></script>
+	<script src="./public/js/main.js"></script>
 </head>
 
 <body>
-	<header class="navbar navbar-static-top" id="top" role="banner">
+	<header class="navbar navbar-static-top pm-nav" id="top" role="banner">
 		<div class="container">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="#">
-					<img class="logo" src="./img/logo-transparent.png" alt="brand-logo"></img>
+					<img class="logo" src="./public/img/logo-transparent.png" alt="brand-logo"></img>
 				</a>
 			</div>
-			<nav id="pm-navbar">
+			<nav id="pm-navbar" class="navbar-collapse">
 					
 				<ul class="nav navbar-nav">
 					<li><a href="#">About</a></li>
@@ -30,6 +32,21 @@
 			<h1>Price Optimization</h1>
 			<p>Synchronous with live currency exchange rate</p>
 			<p>Secure profit for multi-currency transactions</p>
+		</div>
+	</div>
+	<div class="container pm-container">
+		<div class="row">
+			<div  id="input" class="col-md-8">
+				<table id="input-tb"class="table table-hover">
+					<tr>
+						<th>Currency</th>
+						<th>Current Rate</th>
+						<th>Bought Rate</th>
+						<th>Unit</th>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-4"></div>
 		</div>
 	</div>
 </body>
