@@ -8,8 +8,14 @@ var HTMLSpreadAmNone = '<td class="spAm"></td>';
 var HTMLSpreadAm = '<td class="spAm">%data%</td>';
 var HTMLPercentNone = '<td class="percent"></td>';
 var HTMLPercent= '<td class="percent">%data%</td>';
+var HTMLCustomerNone = '<td class="customer"></td>';
+var HTMLCustomer= '<td class="customer">%data%</td>';
 var HTMLUpdate = '<p class="update"><i>Last Updated:&nbsp;<span>%data%</span></i></p>'
+var HTMLTargetProfit = 'Target Profit = %data% (MYR)';
+var HTMLTotalCost = 'Total Cost = %data% (MYR)';
 $(document).ready(function() {
+	$(".profit").append(HTMLTargetProfit.replace('%data%', targetProfit.toFixed(2)));
+	$(".total-cost").append(HTMLTotalCost.replace('%data%', total_cost.toFixed(2)));
 	for(var i=0;i<ccys.length;i++){
 		$("#input-tb").append(HTMLRowGeneral.replace("%data%",HTMLCcy.replace("%data%",ccys[i]) +
 															HTMLBought.replace('%data%', cost[i].toFixed(4)) +
@@ -18,7 +24,8 @@ $(document).ready(function() {
 		$('.ccy').last().after(HTMLLiveNone);
 		$('.live').last().attr('id', ccys[i]);
 		$("#output-tb").append(HTMLRowGeneral.replace("%data%",HTMLSpreadAmNone +
-																HTMLPercentNone
+																HTMLPercentNone +
+																HTMLCustomerNone
 													));
 	}
 });
@@ -36,7 +43,8 @@ setInterval(function(){
 			var spread = result[1];
 			var dt = new Date();
 			var time = dt.getDate() + "/" + dt.getMonth() + "/" + dt.getFullYear() + " " +
-						dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+						("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" +
+						("0" + dt.getSeconds()).slice(-2);
 			console.log(spread);
 
 			// console.log(result.constructor);
@@ -53,6 +61,9 @@ setInterval(function(){
 
 			$('.percent').each(function(i){
 				$(this).replaceWith(HTMLPercent.replace('%data%', ((spread[i]/cost[i])*100).toFixed(2)));
+			});
+			$('.customer').each(function(i){
+				$(this).replaceWith(HTMLCustomer.replace('%data%', (cost[i] + spread[i]).toFixed(4)));
 			});
 		
 		}

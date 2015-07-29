@@ -13,15 +13,15 @@
 	<header class="navbar navbar-static-top pm-nav" id="top" role="banner">
 		<div class="container">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#">
+				<a class="navbar-brand" href="http://www.ezfx.com.sg/">
 					<img class="logo" src="./public/img/logo-transparent.png" alt="brand-logo"></img>
 				</a>
 			</div>
 			<nav id="pm-navbar" class="navbar-collapse">
 					
 				<ul class="nav navbar-nav">
-					<li><a href="#">About</a></li>
-					<li><a href="#">Price Model</a></li>
+					<li><a href="http://www.ezfx.com.sg/">About Us</a></li>
+					<li><a href="./public/docs/white-paper.pdf">Price Model</a></li>
 				</ul>
 
 			</nav>
@@ -30,22 +30,25 @@
 	<div class="pm-header" id="content">
 		<div class="container">
 			<h1>Price Optimization</h1>
-			<p>Synchronous with live currency exchange rate</p>
-			<p>Secure profit for multi-currency pricing</p>
+			<p>Synchronize with live currency exchange rate</p>
+			<p>Secure revenue and maintain competitiveness</p>
 		</div>
 	</div>
 	<div class="container pm-container">
 		<div class="row update-container">
-			<div class="col-md-7 col-md-offset-4">
+			<div class="col-md-3 col-md-offset-4">
 				<p class="update"><i>Last Updated:&nbsp;<span></span></i></p>
 			</div>
-			<div class="col-md-5">
+			<div class="col-md-4 col-md-offset-1">
 			</div>
 		</div>
 		<div class="row">
 			<div  id="input" class="col-md-7">
 				<table id="input-tb"class="table table-hover">
-					<caption>Input</caption>
+					<caption>
+						<b>Input</b>
+						<p class="total-cost"></p>
+					</caption>
 					<tr>
 						<th>Currency</th>
 						<th>Current Rate</th>
@@ -56,10 +59,14 @@
 			</div>
 			<div id="output" class="col-md-4 col-md-offset-1">
 				<table id="output-tb"class="table table-hover">
-					<caption>Output - Spread</caption>
+					<caption>
+						<b>Output - Spread</b>
+						<p class="profit"></p>
+					</caption>
 					<tr>
 						<th>Amount</th>
-						<th>&#37;</th>
+						<th>(&#37;)</th>
+						<th>Pricing Rate</th>
 					</tr>
 				</table>
 			</div>

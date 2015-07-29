@@ -27,7 +27,7 @@ var amount = [1, 1, 1, 100, 1, 1];
 var cost = [2.8440, 4.0406, 5.5864, 0.0308, 2.7862, 3.7985];
 //modified cost with amount
 //cost = u.multiply1DArr(cost, amount);
-var upperBound = [2.8440, 4.3, 6.0, 0.0309, 2.8, 3.9];
+var upperBound = [2.8277, 4.2912, 6.0159, 0.0317, 2.8233, 3.8402];
 //modified upperBound with amount
 //upperBound = u.multiply1DArr(upperBound, amount);
 var targetProfit = 0.6;
