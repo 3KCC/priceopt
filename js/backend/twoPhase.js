@@ -22,7 +22,7 @@ function GuassElimination(matrix, pivot){
 	}*/
 	for (var r=0; r<m.length; r++) {
 		//multiply non-pivot rows with a suitable number and add with the pivot row
-		test = m[0].length;
+		//test = m[0].length;
 
 		//console.log('init',test,m[0].length);
 		
@@ -140,8 +140,8 @@ function isNumeric(n) {
 
 //input: matrix (object)
 function simplex(matrix){
-	var h = matrix.horizon;
-	var v = matrix.vertical;
+	var h = matrix.horizon.slice();
+	var v = matrix.vertical.slice();
 	var workTb = matrix.table;
 	return interate(workTb, h, v, 1);
 }
@@ -149,13 +149,13 @@ function simplex(matrix){
 //input: matrix (object)
 //output: result matrix (object)
 function twoPhase(matrix){
-	var h = matrix.horizon;
-	var v = matrix.vertical;
+	var h = matrix.horizon.slice();
+	var v = matrix.vertical.slice();
 	//Phase 1: return the BFS for next stage
-	result = phaseI(matrix.table, matrix.numOfArt, h, v);
-	tb = result[0];
-	h = result[1];
-	v = result[2];
+	var result = phaseI(matrix.table, matrix.numOfArt, h, v);
+	tb = result[0].slice();
+	h = result[1].slice();
+	v = result[2].slice();
 	//console.log(tb[0].length);
 	result = phaseII(tb, matrix.numOfArt, h, v);
 	return result;
@@ -172,7 +172,7 @@ function phaseI(matrix, numArt, h, v){
 		lastR = sumArr(lastR, matrix[i]);
 	}
 	workTb[workTb.length - 1] = lastR;
-	
+	//console.log(v);
 	result = interate(workTb, h, v, 2);
 	return result;
 }
@@ -209,7 +209,6 @@ function interate(matrix, h, v, num){
 		c = getpCol(lastRow(workTb));
 		
 	}
-
 	return [workTb, h, v];
 }
 
@@ -237,30 +236,63 @@ var sign = ['>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','=','<='
 var p = [[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],[0.01455],
 		[0.0873],[0.0087],[1],[1],[1],[1],[1]];*/
 
-var coef = priceInput.coef;
+/*var coef = priceInput.coef;
 var sign = priceInput.sign;
-var p = priceInput.p;
+var p = priceInput.p;*/
 //console.log(p);
 
-var result = tb.arrangeMatrix(coef, p, sign);
+/*var result = tb.arrangeMatrix(coef, p, sign);
 coef = result[0];
 p = result[1];
-sign = result[2];
+sign = result[2];*/
 //console.log(sign);
-console.log(p);
-var prob = new tb.Tableau(12, 19, coef, sign, p, 'minimize', [0,1,0,1,0,1,0,1,0,1,0,1]);
+/*var prob = new tb.Tableau(12, 19, coef, sign, p, 'minimize', [0,1,0,1,0,1,0,1,0,1,0,1]);
 //console.log(prob.sign);
 //var prob = new tb.Tableau(2, 3, [[1,1],[2,-1],[0,3]], ['>=','>=','<='], [1,1,2], 'minimize', [6, 3]);
 //console.log(prob.slack);
 result = twoPhase(prob);
 var lastC = getACol(result[0], result[0][0].length - 1);
 console.log(result[2], lastC);
-//console.log(JSON.stringify(result));
+//console.log(JSON.stringify(result));*/
 
 function logResult(result){
 	var lastC = getACol(result[0], result[0][0].length - 1);
 	console.log(result[2], lastC);
 }
 
+function parseResult(varArr, result){
+	var v = result[2];
+	var lastC = getACol(result[0], result[0][0].length - 1);
+	var vals = [];
+	//console.log(v);
+	for(var i = 0; i < varArr.length; i++){
+		//console.log(v.indexOf(varArr[i]));
+		if(v.indexOf(varArr[i]) !== -1){
+			vals.push(lastC[v.indexOf(varArr[i])]);
+		}else{
+			vals.push(0);
+		}
+	}
+	return vals;
+}
+
+function calSpread(result, market, bought){
+	var s = [];
+	for(var i = 0; i < result.length; i++){
+		s.push(result[i] + market[i] - bought[i]);
+	}
+	return s;
+}
+
+function calPercentage(spread, bought){
+	var percent = [];
+	for(var i = 0; i < spread.length; i++){
+		percent.push(spread[i]/bought[i]*100);
+	}
+	return percent;
+}
+
 exports.twoPhase = twoPhase;
 exports.logResult = logResult;
+exports.parseResult = parseResult;
+exports.calSpread = calSpread;

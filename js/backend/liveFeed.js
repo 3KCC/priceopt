@@ -4,6 +4,7 @@ var http = require('http');
 var async = require('async');
 var fs = require('fs');
 var app = connect();
+var math = require('mathjs');
 
 function getYQL(pair){
   var endpoint = 'https://query.yahooapis.com/v1/public/yql?q=';
@@ -27,32 +28,7 @@ function getSingleRate(pair, callback){
 
 };
 
-function getAllRates(res){
-  async.series([
-    function(callback){
-      getSingleRate('USDMYR',callback);
-    }/*,
-    function(callback){
-      getSingleRate('EURMYR',callback);
-    },
-    function(callback){
-      getSingleRate('GBPMYR',callback);
-    },
-    function(callback){
-      getSingleRate('AUDMYR',callback);
-    },
-    function(callback){
-      getSingleRate('SGDMYR',callback);
-    },
-    function(callback){
-      getSingleRate('JPYMYR',callback);
-    }*/
-  ], function(err, results){
-    res.end(JSON.stringify(results));
-  });
-}
-
-function getRates(res){
+function getAllRates(res, callback){
   async.series([
     function(callback){
       getSingleRate('AUDMYR',callback);
@@ -77,26 +53,35 @@ function getRates(res){
       console.log('err',err);
     }
     else{
-      var rateArr = [];
-      for(var i=0; i<results.length; i++){
-        rateArr.push(parseFloat(results[i].Rate));
-      }
-      //console.log(rateArr);
-      //return rateArr;
-      res.end(JSON.stringify(rateArr));
+      var solution = callback(results);
+      //res.end(solution);
+      res.end(JSON.stringify(solution));
     }
   });
 };
 
-//exports.getRates = getRates;
+//input: array of objects (array) and property name (string)
+function parseProp(arr, prop){
+  var valArr = [];
+  for(var i=0; i<arr.length; i++){
+    var value = math.eval(arr[i][prop]);
+    valArr.push(value);
+  }
+  return valArr;
+}
 
+exports.getAllRates = getAllRates;
+exports.parseProp = parseProp;
 
+/*app.use('/rate', function(req, res){
+  //res.end(Date.now().toString());
+  getAllRates(res);
+});
 
-/*app.use('/', function(req, res){
+app.use('/', function(req, res){
   //getAllRates(res);
-  fs.readFile(__dirname + '../../../main.html', function(error, content) {
+  fs.readFile('./index.html', function(error, content) {
     if (error) {
-      console.log(error);
       res.writeHead(500);
       res.end();
     }
@@ -109,5 +94,3 @@ function getRates(res){
 
 //http.createServer(app).listen(3000);
 //console.log("Server start @ 3000 (HTTP)");
-
-exports.getRates = getRates;

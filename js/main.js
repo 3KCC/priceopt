@@ -14,7 +14,7 @@ var numConstraints = prIn.numConstraints;
 var result = simplex.twoPhase(prob);
 console.log(result[0]);*/
 
-/*var optimize = function (callback){
+var optimize = function (callback){
   live.getAllRates(callback);
 };
 
@@ -25,6 +25,10 @@ setInterval(function(){
 function callback(res){
   var p = prIn.calculateP(res);
   //console.log(res);
+  var cps = input.arrangeMatrix(coef, p, sign);
+  coef = cps[0];
+  p = cps[1];
+  sign = cps[2];
   var prob = new input.Tableau(numVars, numConstraints, coef, sign, p, obj, objEq);
   simplex.logResult(simplex.twoPhase(prob));
-}*/
+}
