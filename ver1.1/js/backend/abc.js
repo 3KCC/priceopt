@@ -4,8 +4,6 @@ var http = require('http');
 var async = require('async');
 var fs = require('fs');
 var app = connect();
-var math = require('mathjs');
-var prIn = require('./priceInput');
 
 function getYQL(pair){
   var endpoint = 'https://query.yahooapis.com/v1/public/yql?q=';
@@ -29,20 +27,33 @@ function getSingleRate(pair, callback){
 
 };
 
-function multiCall(){
-  var result = [];
-  for(var i=0;i<prIn.ccys.length;i++){
-    result.push(function(callback){
-      getSingleRate(prIn.ccys[i], callback);
-    });
-  }
-  return result;
+function getAllRates(res){
+  async.series([
+    function(callback){
+      getSingleRate('USDMYR',callback);
+    }/*,
+    function(callback){
+      getSingleRate('EURMYR',callback);
+    },
+    function(callback){
+      getSingleRate('GBPMYR',callback);
+    },
+    function(callback){
+      getSingleRate('AUDMYR',callback);
+    },
+    function(callback){
+      getSingleRate('SGDMYR',callback);
+    },
+    function(callback){
+      getSingleRate('JPYMYR',callback);
+    }*/
+  ], function(err, results){
+    res.end(JSON.stringify(results));
+  });
 }
 
-console.log(multiCall().toString());
-
-function getAllRates(res, callback){
-  async.series(/*[
+function getRates(res){
+  async.series([
     function(callback){
       getSingleRate('AUDMYR',callback);
     },
@@ -61,41 +72,31 @@ function getAllRates(res, callback){
     function(callback){
       getSingleRate('USDMYR',callback);
     }
-  ]*/multiCall(prIn.ccys), function(err, results){
+  ], function(err, results){
     if (err){
       console.log('err',err);
     }
     else{
-      var solution = callback(results);
-      //res.end(solution);
-      res.end(JSON.stringify(solution));
-      console.log(solution);
+      var rateArr = [];
+      for(var i=0; i<results.length; i++){
+        rateArr.push(parseFloat(results[i].Rate));
+      }
+      //console.log(rateArr);
+      //return rateArr;
+      res.end(JSON.stringify(rateArr));
     }
   });
 };
 
-//input: array of objects (array) and property name (string)
-function parseProp(arr, prop){
-  var valArr = [];
-  for(var i=0; i<arr.length; i++){
-    var value = math.eval(arr[i][prop]);
-    valArr.push(value);
-  }
-  return valArr;
-}
+//exports.getRates = getRates;
 
-exports.getAllRates = getAllRates;
-exports.parseProp = parseProp;
 
-/*app.use('/rate', function(req, res){
-  //res.end(Date.now().toString());
-  getAllRates(res);
-});
 
-app.use('/', function(req, res){
+/*app.use('/', function(req, res){
   //getAllRates(res);
-  fs.readFile('./index.html', function(error, content) {
+  fs.readFile(__dirname + '../../../main.html', function(error, content) {
     if (error) {
+      console.log(error);
       res.writeHead(500);
       res.end();
     }
@@ -108,3 +109,5 @@ app.use('/', function(req, res){
 
 //http.createServer(app).listen(3000);
 //console.log("Server start @ 3000 (HTTP)");
+
+exports.getRates = getRates;

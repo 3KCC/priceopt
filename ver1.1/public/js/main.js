@@ -4,7 +4,6 @@ var HTMLLiveNone = '<td class="live"></td>';
 var HTMLLive = '<td class="live">%data%</td>';
 var HTMLBought = '<td class="bought">%data%</td>';
 var HTMLUnit = '<td class="unit">%data%</td>';
-var HTMLQuantity = '<td class="quantity">%data%</td>';
 var HTMLSpreadAmNone = '<td class="spAm"></td>';
 var HTMLSpreadAm = '<td class="spAm">%data%</td>';
 var HTMLPercentNone = '<td class="percent"></td>';
@@ -20,7 +19,6 @@ $(document).ready(function() {
 	for(var i=0;i<ccys.length;i++){
 		$("#input-tb").append(HTMLRowGeneral.replace("%data%",HTMLCcy.replace("%data%",ccys[i]) +
 															HTMLBought.replace('%data%', cost[i].toFixed(4)) +
-															HTMLQuantity.replace('%data%', quantity[i].toFixed(2)) +
 															HTMLUnit.replace('%data%', unit[i])
 													));
 		$('.ccy').last().after(HTMLLiveNone);
@@ -33,13 +31,13 @@ $(document).ready(function() {
 });
 
 //$(".ccy").first().append(HTMLLive.replace('%data%', 'N/A'));
-/*setInterval(function(){*/
+setInterval(function(){
 	var xmlhttp = new XMLHttpRequest();    
 	xmlhttp.onreadystatechange=function(){
 		if (xmlhttp.readyState==4 && xmlhttp.status==200){
-			console.log(xmlhttp.responseText);
+			//console.log(xmlhttp.responseText);
 			//result = [live rates, spread]
-			/*var result = JSON.parse(xmlhttp.responseText);
+			var result = JSON.parse(xmlhttp.responseText);
 			// result = $.map(result, function(elm) { return elm; });
 			var liveRate = multiply(result[0],unit);
 			var spread = result[1];
@@ -47,6 +45,7 @@ $(document).ready(function() {
 			var time = dt.getDate() + "/" + dt.getMonth() + "/" + dt.getFullYear() + " " +
 						("0" + dt.getHours()).slice(-2) + ":" + ("0" + dt.getMinutes()).slice(-2) + ":" +
 						("0" + dt.getSeconds()).slice(-2);
+			console.log(spread);
 
 			// console.log(result.constructor);
 
@@ -66,9 +65,9 @@ $(document).ready(function() {
 			$('.customer').each(function(i){
 				$(this).replaceWith(HTMLCustomer.replace('%data%', (cost[i] + spread[i]).toFixed(4)));
 			});
-		*/
+		
 		}
 	}
 	xmlhttp.open("GET","/rate",true);
 	xmlhttp.send();
-/*},15000);*/
+},15000);

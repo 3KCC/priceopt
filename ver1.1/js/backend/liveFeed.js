@@ -5,7 +5,6 @@ var async = require('async');
 var fs = require('fs');
 var app = connect();
 var math = require('mathjs');
-var prIn = require('./priceInput');
 
 function getYQL(pair){
   var endpoint = 'https://query.yahooapis.com/v1/public/yql?q=';
@@ -29,20 +28,8 @@ function getSingleRate(pair, callback){
 
 };
 
-function multiCall(){
-  var result = [];
-  for(var i=0;i<prIn.ccys.length;i++){
-    result.push(function(callback){
-      getSingleRate(prIn.ccys[i], callback);
-    });
-  }
-  return result;
-}
-
-console.log(multiCall().toString());
-
 function getAllRates(res, callback){
-  async.series(/*[
+  async.series([
     function(callback){
       getSingleRate('AUDMYR',callback);
     },
@@ -61,7 +48,7 @@ function getAllRates(res, callback){
     function(callback){
       getSingleRate('USDMYR',callback);
     }
-  ]*/multiCall(prIn.ccys), function(err, results){
+  ], function(err, results){
     if (err){
       console.log('err',err);
     }
@@ -69,7 +56,6 @@ function getAllRates(res, callback){
       var solution = callback(results);
       //res.end(solution);
       res.end(JSON.stringify(solution));
-      console.log(solution);
     }
   });
 };

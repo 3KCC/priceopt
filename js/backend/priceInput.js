@@ -21,17 +21,38 @@ var p;
 //setInterval(getRates, 30000);
 //getRates();
 
-var numOfCcy = 6;
+/*var numOfCcy = 6;
 var ccys = ['AUDMYR', 'EURMYR', 'GBPMYR', 'JPYMYR', 'SGDMYR', 'USDMYR'];
-var amount = [1, 1, 1, 100, 1, 1];
-var cost = [2.8440, 4.0406, 5.5864, 0.0308, 2.7862, 3.7985];
+var unit = [1, 1, 1, 100, 1, 1];
+var amount = [10, 10, 10, 20, 10, 10];//unit based*/
+var numOfCcy = 12;
+var ccys = ['CNYUSD', 'JPYUSD', 'GBPUSR', 'EURUSD',
+			'KRWUSD', 'BRLUSD', 'AUDUSD', 'CADUSD',
+			'SGDUSD', 'ARSUSD', 'RUBUSD', 'HKDUSD'];
+var unit = [1, 100, 1, 1,
+			1000, 1, 1, 1,
+			1, 1, 10, 1];
+var amount = [10, 10, 10, 10,
+			10, 10, 10, 10,
+			10, 10, 10, 10];
+var ccyQuantity = amount.reduce(function(memo, val){
+	return memo + val;
+});
+/*var cost = [2.8440, 4.0406, 5.5864, 0.0308, 2.7862, 3.7985];*/
+var cost = [0.1611, 0.008009, 1.5607, 1.0897,
+			0.00086, 0.28672, 0.7319, 0.7593,
+			0.7222, 0.10857, 0.01581, 0.12901];
 //modified cost with amount
 //cost = u.multiply1DArr(cost, amount);
-var upperBound = [2.8277, 4.2912, 6.0159, 0.0317, 2.8233, 3.8402];
+/*var upperBound = [2.8277, 4.2912, 6.0159, 0.0317, 2.8233, 3.8402];
+var percentUpper = [0.0146, 0.0129, 0.0109, 0.0284, 0.0106, 0.0062];*/
+var percentUpper = [0.01, 0.01, 0.01, 0.01,
+					0.01, 0.01, 0.01, 0.01,
+					0.01, 0.01, 0.01, 0.01];
 //modified upperBound with amount
 //upperBound = u.multiply1DArr(upperBound, amount);
-var targetProfit = 0.6;
-var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
+var targetProfit = 10;
+/*var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
 			[1,-1,0,0,0,0,0,0,0,0,0,0],
 			[0,0,1,1,0,0,0,0,0,0,0,0],
 			[0,0,1,-1,0,0,0,0,0,0,0,0],
@@ -49,14 +70,113 @@ var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
 			[0,0,0,0,1,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,1,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0,1,0,0,0],
-			[0,0,0,0,0,0,0,0,0,0,1,0]];
+			[0,0,0,0,0,0,0,0,0,0,1,0]];*/
+/*var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
+			[1,-1,0,0,0,0,0,0,0,0,0,0],
+			[0,0,1,1,0,0,0,0,0,0,0,0],
+			[0,0,1,-1,0,0,0,0,0,0,0,0],
+			[0,0,0,0,1,1,0,0,0,0,0,0],
+			[0,0,0,0,1,-1,0,0,0,0,0,0],
+			[0,0,0,0,0,0,1,1,0,0,0,0],
+			[0,0,0,0,0,0,1,-1,0,0,0,0],
+			[0,0,0,0,0,0,0,0,1,1,0,0],
+			[0,0,0,0,0,0,0,0,1,-1,0,0],
+			[0,0,0,0,0,0,0,0,0,0,1,1],
+			[0,0,0,0,0,0,0,0,0,0,1,-1],
+			[amount[0],0,amount[1],0,amount[2],0,amount[3],0,amount[4],0,amount[5],0],
+			[1,0,0,0,0,0,0,0,0,0,0,0],
+			[0,0,1,0,0,0,0,0,0,0,0,0],
+			[0,0,0,0,1,0,0,0,0,0,0,0],
+			[0,0,0,0,0,0,1,0,0,0,0,0],
+			[0,0,0,0,0,0,0,0,1,0,0,0],
+			[0,0,0,0,0,0,0,0,0,0,1,0]];*/
 
-var sign = ['>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','=','<=','<=','<=','<=','<=','<='];
-var objEq = [0,1,0,1,0,1,0,1,0,1,0,1];
+var coef = getCoef(numOfCcy, amount);
+
+/*var sign = ['>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','>=','<=','=','<=','<=','<=','<=','<=','<='];*/
+var sign = getSign(numOfCcy);
+/*var objEq = [0,1,0,1,0,1,0,1,0,1,0,1];*/
+var objEq = getObjEq(amount, 1);
 var obj = 'minimize';
-var numVars = 12;
-var numConstraints = 19;
-var spreadVar = ['x1', 'x3', 'x5', 'x7', 'x9', 'x11'];
+var numVars = numOfCcy*2;
+var numConstraints = numOfCcy*3 + 1;
+/*var spreadVar = ['x1', 'x3', 'x5', 'x7', 'x9', 'x11'];*/
+var spreadVar = getSpreadVar(numOfCcy);
+
+function getSpreadVar(num){
+	var arr = [];
+	var index;
+	for(var i=0;i<num;i++){
+		index = i*2+1;
+		arr.push('x' + index);
+	}
+	return arr;
+}
+
+function getSign(num){
+	var arr1 = [], arr2 = [];
+	var result;
+	for(var i=0;i<num;i++){
+		arr1.push(">=","<=");
+		arr2.push("<=");
+	}
+	arr1.push("=");
+	result = arr1.concat(arr2);
+	return result;
+}
+
+function getObjEq(amountArr, type){
+	var arr = [];
+	if(type === 1){
+		for(var i=0;i<amountArr.length;i++){
+			arr.push(0,amountArr[i]);
+		}
+	}
+		
+	if(type === 2){
+		for(var i=0;i<amountArr.length;i++){
+			arr.push(amountArr[i],0);
+		}
+	}
+	return arr;
+}
+
+function getCoef(num, amountArr){
+	return getRowsCoef(num,1).concat([getObjEq(amountArr,2)], getRowsCoef(num,2));
+}
+
+function getRowsCoef(num, type){
+	var result = [];
+	if(type === 1){
+		for(var i=0;i<num;i++){
+			var row1 = [], row2 = [];
+			for(var j=0;j<num;j++){
+				if(i===j){
+					row1.push(1,1);
+					row2.push(1,-1);
+				}else{
+					row1.push(0,0);
+					row2.push(0,0);
+				}
+			}
+			result.push(row1, row2);
+		}
+	}
+	if(type === 2){
+		for(var i=0;i<num;i++){
+			var row = [];
+			for(var j=0;j<num;j++){
+				if(i===j){
+					row.push(1,0);
+				}else{
+					row.push(0,0);
+				}
+			}
+			result.push(row);
+		}
+	}
+	return result;
+}
 
 /*var markToMarket = _.reduce(u.sumArr(market,u.xNumArr(cost, -1)),
 						function(memo, num){
@@ -96,10 +216,15 @@ function calculateP(results){
 	}
 	market = rateArr;
 	//market = [2.8353, 4.1936, 5.9467, 0.0303, 2.7902, 3.8030];
-	markToMarket = math.dot(u.sumArr(market,u.xNumArr(cost, -1)), amount);
+	markToMarket = math.dot(u.sumArr(market,u.xNumArr(cost, -1)), u.multiply1DArr(amount,unit));
+	//modified based on percentage on the top of market
+	upperBound = u.multiply1DArr(market,
+					_.map(percentUpper,function(val){
+									return 1 + val;
+				}));
 	b = u.multiply1DArr(u.sumArr(upperBound,u.xNumArr(market, -1)), amount);
 	targetResidues = targetProfit - markToMarket;
-	avgR = targetResidues / numOfCcy;
+	avgR = targetResidues / ccyQuantity;
 	oneTo12 = itemToArr([avgR], numOfCcy*2);
 	p = function(){
 			var result = oneTo12.concat([ [targetResidues] ]);
@@ -111,6 +236,12 @@ function calculateP(results){
 	return p;
 }
 
+/*console.log(u.multiply1DArr([2.8353, 4.1936, 5.9467, 0.0303, 2.7902, 3.8030],
+	_.map(percentUpper,function(val){
+		return 1 + val;
+})));*/
+exports.ccys = ccys;
+exports.unit = unit;
 exports.amount = amount;
 exports.cost = cost;
 exports.coef = coef;

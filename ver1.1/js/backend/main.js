@@ -11,7 +11,7 @@ var obj = prIn.obj;
 var numVars = prIn.numVars;
 var numConstraints = prIn.numConstraints;
 var rateProp = "Rate";
-var unit = prIn.unit;
+var am = prIn.amount;
 var cost = prIn.cost;
 
 /*var prob = new input.Tableau(numVars, numConstraints, coef, sign, p, obj, objEq);
@@ -30,20 +30,18 @@ exports.optimize = optimize;
 exports.callback = callback;
 
 function callback(res){
-	// var liveRate = live.parseProp(res, rateProp);
-	var liveRate = res;
-// 	var p = prIn.calculateP(res);
-// /*	var cps = input.arrangeMatrix(coef,p,sign);
-// 	coef = cps[0];
-// 	p = cps[1];
-// 	sign = cps[2];*/
-// 	var prob = new input.Tableau(numVars, numConstraints, coef, sign, p, obj, objEq);
-// 	//console.log(prob.vertical, prob.horizon);
-// 	var sol = simplex.twoPhase(prob);
-// 	//simplex.logResult(sol);
-// 	// console.log(u.multiply1DArr(liveRate, am), cost);
-// 	var spread = simplex.calSpread(simplex.parseResult(prIn.spreadVar,sol), u.multiply1DArr(liveRate, unit), u.multiply1DArr(cost, unit));
-// 	//console.log(spread);
-	spread = 0;
+	var liveRate = live.parseProp(res, rateProp);
+	var p = prIn.calculateP(res);
+/*	var cps = input.arrangeMatrix(coef,p,sign);
+	coef = cps[0];
+	p = cps[1];
+	sign = cps[2];*/
+	var prob = new input.Tableau(numVars, numConstraints, coef, sign, p, obj, objEq);
+	//console.log(prob.vertical, prob.horizon);
+	var sol = simplex.twoPhase(prob);
+	//simplex.logResult(sol);
+	// console.log(u.multiply1DArr(liveRate, am), cost);
+	var spread = simplex.calSpread(simplex.parseResult(prIn.spreadVar,sol), u.multiply1DArr(liveRate, am), u.multiply1DArr(cost, am));
+	//console.log(spread);
 	return [liveRate, spread];
 }
