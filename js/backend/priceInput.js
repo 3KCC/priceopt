@@ -26,32 +26,38 @@ var ccys = ['AUDMYR', 'EURMYR', 'GBPMYR', 'JPYMYR', 'SGDMYR', 'USDMYR'];
 var unit = [1, 1, 1, 100, 1, 1];
 var amount = [10, 10, 10, 20, 10, 10];//unit based*/
 var numOfCcy = 12;
-var ccys = ['CNYUSD', 'JPYUSD', 'GBPUSR', 'EURUSD',
-			'KRWUSD', 'BRLUSD', 'AUDUSD', 'CADUSD',
-			'SGDUSD', 'ARSUSD', 'RUBUSD', 'HKDUSD'];
-var unit = [1, 100, 1, 1,
-			1000, 1, 1, 1,
-			1, 1, 10, 1];
-var amount = [10, 10, 10, 10,
-			10, 10, 10, 10,
-			10, 10, 10, 10];
+var ccys = ['CADUSD', 'EURUSD', 'GBPUSD', 'JPYUSD',
+			'AUDUSD', 'NZDUSD', 'CHFUSD', 'HKDUSD',
+			'SGDUSD', 'SEKUSD', 'DKKUSD', 'PLNUSD'];
+var unit = [10, 1, 1, 1000,
+			10, 10, 1, 100,
+			10, 100, 100, 100];
+var amount = [500, 400, 300, 100,
+			100, 100, 300, 100,
+			100, 100, 100, 100];
 var ccyQuantity = amount.reduce(function(memo, val){
 	return memo + val;
 });
 /*var cost = [2.8440, 4.0406, 5.5864, 0.0308, 2.7862, 3.7985];*/
-var cost = [0.1611, 0.008009, 1.5607, 1.0897,
-			0.00086, 0.28672, 0.7319, 0.7593,
-			0.7222, 0.10857, 0.01581, 0.12901];
+var cost = [0.76834, 1.1111, 1.5623, 0.0080292,
+			0.73325, 0.65749, 1.0227, 0.129010,
+			0.71588, 0.117401, 0.14891, 0.26552];
 //modified cost with amount
 //cost = u.multiply1DArr(cost, amount);
 /*var upperBound = [2.8277, 4.2912, 6.0159, 0.0317, 2.8233, 3.8402];
 var percentUpper = [0.0146, 0.0129, 0.0109, 0.0284, 0.0106, 0.0062];*/
-var percentUpper = [0.01, 0.01, 0.01, 0.01,
-					0.01, 0.01, 0.01, 0.01,
-					0.01, 0.01, 0.01, 0.01];
+var percentUpper = [0.04, 0.04, 0.04, 0.04,
+					0.06, 0.06, 0.06, 0.06,
+					0.08, 0.08, 0.08, 0.08];
 //modified upperBound with amount
 //upperBound = u.multiply1DArr(upperBound, amount);
-var targetProfit = 10;
+var cost_amount = u.multiply1DArr(u.multiply1DArr(cost, amount), unit);
+var total_cost = cost_amount.reduce(function(memo, val){
+	return memo + val;
+});
+var profitPercent = 0.025;
+var targetProfit = total_cost*profitPercent;
+// console.log(targetProfit);
 /*var coef = [[1,1,0,0,0,0,0,0,0,0,0,0],
 			[1,-1,0,0,0,0,0,0,0,0,0,0],
 			[0,0,1,1,0,0,0,0,0,0,0,0],
@@ -209,12 +215,12 @@ function itemToArr(item, len){
 }
 
 function calculateP(results){
-	var rateArr = [];
-	for(var i=0; i<results.length; i++){
-		var r = math.eval(results[i].Rate);
-		rateArr.push(r);
-	}
-	market = rateArr;
+	// var rateArr = [];
+	// for(var i=0; i<results.length; i++){
+	// 	var r = math.eval(results[i].Rate);
+	// 	rateArr.push(r);
+	// }
+	market = results.slice();
 	//market = [2.8353, 4.1936, 5.9467, 0.0303, 2.7902, 3.8030];
 	markToMarket = math.dot(u.sumArr(market,u.xNumArr(cost, -1)), u.multiply1DArr(amount,unit));
 	//modified based on percentage on the top of market
@@ -222,7 +228,12 @@ function calculateP(results){
 					_.map(percentUpper,function(val){
 									return 1 + val;
 				}));
-	b = u.multiply1DArr(u.sumArr(upperBound,u.xNumArr(market, -1)), amount);
+	if(limitProfit(cost, upperBound) < targetProfit){
+		console.log("Max Profit is: " + limitProfit(cost, upperBound));
+	}else{
+		console.log("Target Profit is within limit.")
+	}
+	b = u.multiply1DArr(u.sumArr(upperBound,u.xNumArr(market, -1)), unit);
 	targetResidues = targetProfit - markToMarket;
 	avgR = targetResidues / ccyQuantity;
 	oneTo12 = itemToArr([avgR], numOfCcy*2);
@@ -234,6 +245,10 @@ function calculateP(results){
 			return result;
 		}();
 	return p;
+}
+
+function limitProfit(c,ub){
+	return math.dot(u.sumArr(ub, u.xNumArr(c, -1)), u.multiply1DArr(amount,unit));
 }
 
 /*console.log(u.multiply1DArr([2.8353, 4.1936, 5.9467, 0.0303, 2.7902, 3.8030],
