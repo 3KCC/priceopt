@@ -1,0 +1,128 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head id="Head1"><link href="./Styles/Login.css" rel="stylesheet" type="text/css"><title>
+    EZFX
+</title></head>
+<body>
+    <form method="post" action="Login.aspx" onsubmit="javascript:return WebForm_OnSubmit();" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTc1MzkwOTY1NmQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgIFF0xvZ2luQ29udHJvbCRSZW1lbWJlck1lBR1Mb2dpbkNvbnRyb2wkTG9naW5JbWFnZUJ1dHRvbpudFBj2wG/uT5wpserq/qGJWnhQeLTXmD2C5epjN6Cz">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="/WebResource.axd?d=Eo7B0SKC2Ut0yp3fA6LYsCUF4H5ZiuyJbOO0a9UpS5MC7ed0xBBIWXRKkFvsdmA5oMDQfG5A_huTs445Rg0dAbXuDjg47bjSqr2giluC8cE1&amp;t=635589435571259667" type="text/javascript"></script>
+
+
+<script src="/WebResource.axd?d=hQf41W3Ls3oPRe_cKr6ZH1T4bx5F7rZoGljayiW5OdF5ZaAGfnyDEyY9qPJnihQnHlHv7BV-8z07E9eZil38t87dRZb3obIAk9_9MzuKzFs1&amp;t=635589435571259667" type="text/javascript"></script>
+<script src="/WebResource.axd?d=RtVk_8o5Wrte3M-bc2HLPL-U8FBVRaHjwrsj7CiX4GvVHZnxviTuahGZ0JJiXWedrXJLjCAkwPbzf9kUTwtdsJxw_gfWRF89zXuD29UksF01&amp;t=635589435571259667" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+function WebForm_OnSubmit() {
+if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+//]]>
+</script>
+
+<div class="aspNetHidden">
+
+    <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="CD85D8D2">
+    <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAXrnQKR3x2x9ZVDocsCHGdZDBe+Sp7Mzs2yPjaDBMs/utsguulOgDNY2DNeQ8w+r/fjMd1d/f3//2OTHxF2ZjROCMDyJ2pYj60NYUjV8MpTUD2SYyZUh9fT3ZpiQ7EpvcDctXmuPZxO1H4+rl1vHOHV">
+</div>
+    <h1>
+        <img src="./Styles/images/EZFXlogo.png" style="width:170px">
+    </h1>
+    <div class="login">
+        <table>
+            <tbody><tr>
+                <td>
+                    <table class="login" cellspacing="0" cellpadding="1" id="LoginControl" style="border-collapse:collapse;">
+    <tbody><tr>
+        <td><table cellpadding="0">
+            <tbody><tr>
+                <td class="LoginTitle" align="center" colspan="2">Prize Optimization</td>
+            </tr><tr>
+                <td class="LoginLabel" align="right"><label for="LoginControl_UserName">User Name:</label></td><td><input name="LoginControl$UserName" type="text" id="LoginControl_UserName" class="LoginTxtBox"><span id="LoginControl_UserNameRequired" title="User Name is required." style="visibility:hidden;">*</span></td>
+            </tr><tr>
+                <td class="LoginLabel" align="right"><label for="LoginControl_Password">Password:</label></td><td><input name="LoginControl$Password" type="password" id="LoginControl_Password" class="LoginTxtBox"><span id="LoginControl_PasswordRequired" title="Password is required." style="visibility:hidden;">*</span></td>
+            </tr><tr>
+                <td class="LoginChkbox" colspan="2"><input id="LoginControl_RememberMe" type="checkbox" name="LoginControl$RememberMe"><label for="LoginControl_RememberMe">Remember me next time.</label></td>
+            </tr><tr>
+                <td align="right" colspan="2"><input type="submit" name="LoginControl$LoginButton" value="LOG IN" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;LoginControl$LoginButton&quot;, &quot;&quot;, true, &quot;LoginControl&quot;, &quot;&quot;, false, false))" id="LoginControl_LoginButton" class="LoginBtn"></td>
+            </tr>
+        </tbody></table></td>
+    </tr>
+</tbody></table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="lblFeedback" style="color:Red;"></span>
+                </td>
+            </tr>
+        </tbody></table>
+    </div>
+    
+<script type="text/javascript">
+//<![CDATA[
+var Page_Validators =  new Array(document.getElementById("LoginControl_UserNameRequired"), document.getElementById("LoginControl_PasswordRequired"));
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var LoginControl_UserNameRequired = document.all ? document.all["LoginControl_UserNameRequired"] : document.getElementById("LoginControl_UserNameRequired");
+LoginControl_UserNameRequired.controltovalidate = "LoginControl_UserName";
+LoginControl_UserNameRequired.errormessage = "User Name is required.";
+LoginControl_UserNameRequired.validationGroup = "LoginControl";
+LoginControl_UserNameRequired.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+LoginControl_UserNameRequired.initialvalue = "";
+var LoginControl_PasswordRequired = document.all ? document.all["LoginControl_PasswordRequired"] : document.getElementById("LoginControl_PasswordRequired");
+LoginControl_PasswordRequired.controltovalidate = "LoginControl_Password";
+LoginControl_PasswordRequired.errormessage = "Password is required.";
+LoginControl_PasswordRequired.validationGroup = "LoginControl";
+LoginControl_PasswordRequired.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+LoginControl_PasswordRequired.initialvalue = "";
+//]]>
+</script>
+
+
+<script type="text/javascript">
+//<![CDATA[
+
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+        WebForm_AutoFocus('LoginControl_UserName');//]]>
+</script>
+</form>
+
+
+</body></html>

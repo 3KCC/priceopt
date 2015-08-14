@@ -5,15 +5,15 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="./public/css/main.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="./public/js/priceInput.js"></script>
-	<script src="./public/js/main.js"></script>
+<!-- 	<script src="./public/js/priceInput.js"></script>
+	<script src="./public/js/main.js"></script> -->
 </head>
 
 <body>
 	<header class="navbar navbar-static-top pm-nav" id="top" role="banner">
 		<div class="container">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="http://www.ezfx.com.sg/">
+				<a class="navbar-brand" href="./home">
 					<img class="logo" src="./public/img/logo-transparent.png" alt="brand-logo"></img>
 				</a>
 			</div>
@@ -27,14 +27,59 @@
 			</nav>
 		</div>
 	</header>
+	<div class="pm-header" id="content">
+		<div class="container">
+			<h1>Price Optimization</h1>
+			<p>Synchronize with live currency exchange rate</p>
+			<p>Secure revenue and maintain competitiveness</p>
+		</div>
+	</div>
 	<div class="container">
 		<div class="title">
 			<h2>Settings</h2>
 		</div>
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-3">
+				<h5>Base Currency: </h5>
+				<select>
+					<option value="USD">USD</option>
+					<option value="GBP">GBP</option>
+					<option value="EUR">EUR</option>
+					<option value="JPY">JPY</option>
+					<option value="AUD">AUD</option>
+					<option value="CAD">CAD</option>
+					<option value="NZD">NZD</option>
+					<option value="CHF">CHF</option>
+					<option value="HKD">HKD</option>
+					<option value="SGD">SGD</option>
+					<option value="SEK">SEK</option>
+					<option value="DKK">DKK</option>
+					<option value="PLN">PLN</option>
+					<option value="NOK">NOK</option>
+					<option value="HUF">HUF</option>
+					<option value="CZK">CZK</option>
+					<option value="ILS">ILS</option>
+					<option value="MXN">MXN</option>
+					<option value="PHP">PHP</option>
+					<option value="TWD">TWD</option>
+					<option value="THB">THB</option>
+					<option value="RUB">RUB</option>
+					<option value="BRL">*BRL</option>
+					<option value="MYR">*MYR</option>
+					<option value="TRY">*TRY</option>
+				</select>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-9">
+				<h5>Target Profit (%): </h5>
+				<select>
+					<option value="2.5">2.5%</option>
+					<option value="3.0">3.0%</option>
+					<option value="3.5">3.5%</option>
+					<option value="4.0">4.0%</option>
+					<option value="4.5">4.5%</option>
+					<option value="5.0">5.0%</option>
+					<option value="5.5">5.5%</option>
+				</select>
 			</div>
 		</div>
 	</div>
