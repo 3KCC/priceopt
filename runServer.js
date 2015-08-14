@@ -7,20 +7,6 @@ var bken = require('./js/backend/main.js');
 
 app.use("/public", serveStatic(__dirname + '/public'));
 
-app.use('/', function(req, res){
-  //getAllRates(res);
-    fs.readFile('./main.html', function(error, content) {
-      if (error) {
-        res.writeHead(500);
-        res.end();
-      }
-      else {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(content, 'utf-8');
-      }
-    });
-});
-
 app.use('/settings', function(req, res){
   //getAllRates(res);
     fs.readFile('./settings.html', function(error, content) {
@@ -38,6 +24,20 @@ app.use('/settings', function(req, res){
 app.use('/rate', function(req, res){
   //res.end(Date.now().toString());
   bken.optimize(res, bken.callback);
+});
+
+app.use('/', function(req, res){
+  //getAllRates(res);
+    fs.readFile('./main.html', function(error, content) {
+      if (error) {
+        res.writeHead(500);
+        res.end();
+      }
+      else {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(content, 'utf-8');
+      }
+    });
 });
 
 var port = process.env.PORT || 5000;
