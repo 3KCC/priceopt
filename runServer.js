@@ -7,7 +7,7 @@ var bken = require('./js/backend/main.js');
 
 app.use("/public", serveStatic(__dirname + '/public'));
 
-app.use('/home', function(req, res){
+app.use('/', function(req, res){
   //getAllRates(res);
     fs.readFile('./main.html', function(error, content) {
       if (error) {
@@ -26,6 +26,6 @@ app.use('/rate', function(req, res){
   bken.optimize(res, bken.callback);
 });
 
-http.createServer(app).listen(3000);
+http.createServer(app).listen(5000);
 
-console.log("Server start @ 3000 (HTTP)");
+console.log("Server start @ 5000 (HTTP)");
