@@ -6,10 +6,8 @@ var url = require('url');
 var app = connect();
 var bken = require('./js/backend/main.js');
 
-var wwwhisper = require('connect-wwwhisper');
-// app holds a reference to express or connect framework, it
-// may be named differently in your source file.
-app.use(wwwhisper());
+/*var wwwhisper = require('connect-wwwhisper');
+app.use(wwwhisper());*/
 
 app.use("/public", serveStatic(__dirname + '/public'));
 
