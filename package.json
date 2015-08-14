@@ -4,6 +4,7 @@
   "description": "Price optimization",
   "main": "index.js",
   "scripts": {
+    "start": "node runServer.js",
     "test": "test"
   },
   "author": "3KCC",
