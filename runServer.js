@@ -21,6 +21,20 @@ app.use('/home', function(req, res){
     });
 });
 
+app.use('/settings', function(req, res){
+  //getAllRates(res);
+    fs.readFile('./settings.html', function(error, content) {
+      if (error) {
+        res.writeHead(500);
+        res.end();
+      }
+      else {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(content, 'utf-8');
+      }
+    });
+});
+
 app.use('/rate', function(req, res){
   //res.end(Date.now().toString());
   bken.optimize(res, bken.callback);
