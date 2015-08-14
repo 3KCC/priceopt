@@ -26,6 +26,8 @@ app.use('/rate', function(req, res){
   bken.optimize(res, bken.callback);
 });
 
-http.createServer(app).listen(5000);
+var port = process.env.PORT || 5000;
 
-console.log("Server start @ 5000 (HTTP)");
+http.createServer(app).listen(port);
+
+console.log('Server start @ '+port+' (HTTP)');
